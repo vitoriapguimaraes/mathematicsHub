@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora Básica - Mathematics Hub</title>
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+    <style>
+      .calculator-container {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .calc-screen {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        text-align: right;
+        margin-bottom: 1.5rem;
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        word-break: break-all;
+      }
+      .prev-operand {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        min-height: 1.5rem;
+      }
+      .curr-operand {
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
+      .calc-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+      }
+      .calc-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--card-border);
+        color: white;
+        font-size: 1.5rem;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition-fast);
+        user-select: none;
+      }
+      .calc-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+      .calc-btn.op {
+        color: var(--accent-color);
+        background: rgba(139, 92, 246, 0.1);
+      }
+      .calc-btn.op:hover {
+        background: rgba(139, 92, 246, 0.2);
+      }
+      .calc-btn.equals {
+        grid-column: span 1;
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+      }
+      .calc-btn.equals:hover {
+        background: var(--accent-hover);
+      }
+      .calc-btn.clear {
+        color: var(--error);
+      }
+      @media (max-width: 400px) {
+        .calc-btn {
+          font-size: 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <a
+        href="../../index.html"
+        style="
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: var(--text-secondary);
+          text-decoration: none;
+          margin-bottom: 2rem;
+        "
+      >
+        <ion-icon name="arrow-back-outline"></ion-icon> Voltar para o Hub
+      </a>
+
+      <div class="card calculator-container animate-fade-in">
+        <header style="text-align: center; margin-bottom: 1.5rem">
+          <!-- <ion-icon name="calculator-outline" style="font-size: 2rem; color: var(--accent-color); background: rgba(255,255,255,0.1); padding: 0.5rem; border-radius: 8px;"></ion-icon> -->
+          <h2>Calculadora</h2>
+        </header>
+
+        <div class="calc-screen">
+          <div class="prev-operand" id="prev-operand"></div>
+          <div class="curr-operand" id="curr-operand">0</div>
+        </div>
+
+        <div class="calc-grid">
+          <button class="calc-btn clear" data-action="ce">CE</button>
+          <button class="calc-btn clear" data-action="c">C</button>
+          <button class="calc-btn op" data-op="%">%</button>
+          <button class="calc-btn op" data-op="/">÷</button>
+
+          <button class="calc-btn" data-num="7">7</button>
+          <button class="calc-btn" data-num="8">8</button>
+          <button class="calc-btn" data-num="9">9</button>
+          <button class="calc-btn op" data-op="*">×</button>
+
+          <button class="calc-btn" data-num="4">4</button>
+          <button class="calc-btn" data-num="5">5</button>
+          <button class="calc-btn" data-num="6">6</button>
+          <button class="calc-btn op" data-op="-">-</button>
+
+          <button class="calc-btn" data-num="1">1</button>
+          <button class="calc-btn" data-num="2">2</button>
+          <button class="calc-btn" data-num="3">3</button>
+          <button class="calc-btn op" data-op="+">+</button>
+
+          <button class="calc-btn" data-num="00">00</button>
+          <button class="calc-btn" data-num="0">0</button>
+          <button class="calc-btn" data-num=".">.</button>
+          <button class="calc-btn equals" data-action="compute">=</button>
+        </div>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Média - Mathematics Hub</title>
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+    <style>
+      /* App Specific overrides */
+      .app-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      .inputs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .result-box {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: var(--radius-md);
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      .history-section {
+        margin-top: 3rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+      }
+      th,
+      td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--card-border);
+      }
+      th {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--accent-color);
+      }
+      .error-msg {
+        color: var(--error);
+        margin-top: 1rem;
+        text-align: center;
+        min-height: 1.5rem;
+      }
+      .controls {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app-container">
+      <a
+        href="../../index.html"
+        style="
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: var(--text-secondary);
+          text-decoration: none;
+          margin-bottom: 2rem;
+        "
+      >
+        <ion-icon name="arrow-back-outline"></ion-icon> Voltar para o Hub
+      </a>
+
+      <div class="card animate-fade-in">
+        <header style="text-align: center; margin-bottom: 2rem">
+          <div class="card-icon" style="margin: 0 auto 1rem auto">
+            <ion-icon name="school-outline"></ion-icon>
+          </div>
+          <h1>Calculadora de Média</h1>
+          <p>Insira seu nome e as notas do bimestre para calcular sua média.</p>
+        </header>
+
+        <div class="input-section">
+          <input
+            id="name"
+            type="text"
+            placeholder="Nome do Aluno"
+            style="margin-bottom: 1rem"
+          />
+
+          <div class="inputs-grid">
+            <input
+              id="grade1"
+              type="number"
+              step="0.1"
+              min="0"
+              max="10"
+              placeholder="1ª Nota"
+            />
+            <input
+              id="grade2"
+              type="number"
+              step="0.1"
+              min="0"
+              max="10"
+              placeholder="2ª Nota"
+            />
+            <input
+              id="grade3"
+              type="number"
+              step="0.1"
+              min="0"
+              max="10"
+              placeholder="3ª Nota"
+            />
+            <input
+              id="grade4"
+              type="number"
+              step="0.1"
+              min="0"
+              max="10"
+              placeholder="4ª Nota"
+            />
+          </div>
+
+          <div class="controls">
+            <button id="ok-button" class="btn" style="flex: 2">
+              <ion-icon
+                name="calculator-outline"
+                style="margin-right: 0.5rem"
+              ></ion-icon>
+              Calcular
+            </button>
+            <button
+              id="clear-button"
+              class="btn"
+              style="
+                background: transparent;
+                border: 1px solid var(--card-border);
+                flex: 1;
+              "
+            >
+              Limpar
+            </button>
+          </div>
+
+          <div class="error-msg"></div>
+
+          <div class="result-box">
+            <span id="result">Média: -</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="history-section animate-fade-in delay-200">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+          "
+        >
+          <h2>Histórico</h2>
+          <div style="display: flex; gap: 0.5rem">
+            <select
+              id="file-type"
+              style="padding: 0.5rem; border-radius: 4px; border: none"
+            >
+              <option value="txt">.txt</option>
+              <option value="csv">.csv</option>
+            </select>
+            <button
+              id="export-button"
+              class="btn"
+              style="padding: 0.5rem 1rem; font-size: 0.9rem"
+            >
+              Exportar
+            </button>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto">
+          <table id="history-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>N1</th>
+                <th>N2</th>
+                <th>N3</th>
+                <th>N4</th>
+                <th>Média</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Rows added by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
