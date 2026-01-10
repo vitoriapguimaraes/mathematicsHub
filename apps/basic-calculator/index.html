@@ -13,6 +13,7 @@
       nomodule
       src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
     ></script>
+    <script type="module" src="../../assets/js/layout.js"></script>
     <style>
       .calculator-container {
         max-width: 400px;
@@ -90,19 +91,7 @@
   </head>
   <body>
     <main class="container">
-      <a
-        href="../../index.html"
-        style="
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          color: var(--text-secondary);
-          text-decoration: none;
-          margin-bottom: 2rem;
-        "
-      >
-        <ion-icon name="arrow-back-outline"></ion-icon> Voltar para o Hub
-      </a>
+      <!-- Sidebar handles navigation -->
 
       <div class="card calculator-container animate-fade-in">
         <header style="text-align: center; margin-bottom: 1.5rem">
