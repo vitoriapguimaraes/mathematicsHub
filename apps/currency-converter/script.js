@@ -97,6 +97,10 @@ async function convert() {
 }
 
 function showError(msg) {
+  // Use Toast if available
+  if (document.getElementById("toast-container")) {
+    showToast(msg, "error");
+  }
   errorMsg.textContent = msg;
 }
 
@@ -156,10 +160,98 @@ function exportHistory() {
   URL.revokeObjectURL(url);
 }
 
+const clearHistoryBtn = document.getElementById("clear-history-button");
+
 // Events
 convertBtn.addEventListener("click", convert);
 swapBtn.addEventListener("click", swapCurrencies);
 exportBtn.addEventListener("click", exportHistory);
+clearHistoryBtn.addEventListener("click", clearHistory);
 
 // Initial Load
 document.addEventListener("DOMContentLoaded", loadCurrencies);
+
+function clearHistory() {
+  if (historyTableBody.children.length === 0) {
+    showToast("Histórico já está vazio.", "info");
+    return;
+  }
+
+  showConfirm(
+    "Tem certeza que deseja limpar todo o histórico de conversões?",
+    () => {
+      historyTableBody.innerHTML = "";
+      showToast("Histórico limpo com sucesso.", "success");
+    }
+  );
+}
+
+// Notification Helpers (Replicated from Media Calculator)
+function showToast(message, type = "info") {
+  const container = document.getElementById("toast-container");
+  if (!container) return; // Guard clause
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+
+  let iconName = "information-circle-outline";
+  if (type === "success") iconName = "checkmark-circle-outline";
+  if (type === "error") iconName = "alert-circle-outline";
+  if (type === "warning") iconName = "warning-outline";
+
+  toast.innerHTML = `
+    <ion-icon name="${iconName}" style="font-size: 1.5rem"></ion-icon>
+    <span>${message}</span>
+  `;
+
+  container.appendChild(toast);
+
+  // Remove after 3 seconds
+  setTimeout(() => {
+    toast.style.animation = "fadeOut 0.3s ease forwards";
+    toast.addEventListener("animationend", () => {
+      toast.remove();
+    });
+  }, 4000);
+}
+
+function showConfirm(message, onConfirm) {
+  const modal = document.getElementById("confirm-modal");
+  if (!modal) {
+    if (confirm(message)) onConfirm();
+    return;
+  }
+
+  const msgEl = document.getElementById("modal-message");
+  const confirmBtn = document.getElementById("modal-confirm");
+  const cancelBtn = document.getElementById("modal-cancel");
+
+  msgEl.textContent = message;
+  modal.classList.add("open");
+
+  const cleanup = () => {
+    modal.classList.remove("open");
+    confirmBtn.replaceWith(confirmBtn.cloneNode(true)); // remove listeners
+    cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+  };
+
+  // Clone buttons to ensure clean listeners
+  const newConfirmBtn = confirmBtn.cloneNode(true);
+  const newCancelBtn = cancelBtn.cloneNode(true);
+  confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+  cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+  newConfirmBtn.addEventListener("click", () => {
+    onConfirm();
+    modal.classList.remove("open");
+  });
+
+  newCancelBtn.addEventListener("click", () => {
+    modal.classList.remove("open");
+  });
+
+  // Close on outside click
+  modal.onclick = (e) => {
+    if (e.target === modal) modal.classList.remove("open");
+  };
+}
