@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de média</title>
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+
+<body>
+  <main>
+
+    <div class="structure-web">
+          
+      <header>
+        <h1 class="page-title">Calculadora de média</h1>
+        <h2 class="page-subtitle">Calcule a média de nota de todas as provas!</h2>
+        <p class="page-text">
+          > Informe seu nome e as notas do bimestre.<br>
+          > Use ponto para notas decimais.<br>
+          > Não se preocupe se tiver feito menos de 4 provas; a média será calculada com base apenas nas notas que você
+          informar.
+        </p>
+      </header>
+
+      <div class="calculator-container">
+
+        <div class="calculator">
+
+          <div class="input-container">
+
+            <input id="name" type="text" placeholder="Nome" style="display:flex; justify-content: center">
+            
+            <div class="grades-inputs">
+              <input id="grade1" type="number" placeholder="1º Nota">
+              <input id="grade2" type="number" placeholder="2º Nota">
+              <input id="grade3" type="number" placeholder="3º Nota">
+              <input id="grade4" type="number" placeholder="4º Nota">
+            </div>
+
+          </div>
+
+          <div class="buttons-container">
+            <button id="ok-button">Calcular</button>
+            <button id="clear-button">Limpar valores</button>
+          </div>
+
+          <p id="result">Média aritmética</p>
+        </div>
+
+        <div class="error"></div>
+      </div>
+    
+    </div>
+
+    <div class="historical-container">
+
+      <div class="historical-header">
+
+        <h2>Histórico</h2>
+
+        <div class="export-options">
+          <label for="file-type">Exportar como:</label>
+          <select id="file-type">
+            <option value="txt">.txt</option>
+            <option value="csv">.csv</option>
+          </select>
+          <button id="export-button">Exportar histórico</button>
+        </div>
+
+      </div>
+
+      <table id="history-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>1ª Nota</th>
+            <th>2ª Nota</th>
+            <th>3ª Nota</th>
+            <th>4ª Nota</th>
+            <th>Média aritmética</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+    </div>
+
+  </main>
+
+  <script src="./src/script.js"></script>
+
+</body>
+
+</html>
