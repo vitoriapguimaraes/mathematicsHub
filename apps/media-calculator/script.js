@@ -8,15 +8,16 @@ function calculateMedia() {
 
   const errorMessage = validateInputs(name, validGrades);
   if (errorMessage) {
-    showError(errorMessage);
+    showToast(errorMessage, "error");
     return;
   }
 
   const average = calculateAverage(validGrades);
 
   if (isDuplicateEntry(name, grades, average)) {
-    showError(
-      "Esses dados já foram inseridos. Altere algo para calcular novamente."
+    showToast(
+      "Esses dados já foram inseridos. Altere algo para calcular novamente.",
+      "warning"
     );
     return;
   }
@@ -30,6 +31,7 @@ function calculateMedia() {
   historyData.push(entry);
   saveHistory();
   addToHistorical(entry);
+  showToast("Média calculada com sucesso", "success");
 
   lastEntry = entry;
 }
@@ -58,6 +60,7 @@ function validateInputs(name, grades) {
 }
 
 function showError(message) {
+  // Keeping this for inline errors if needed, but using Toasts mostly now
   document.querySelector(".error-msg").textContent = message;
 }
 
@@ -145,7 +148,7 @@ function exportHistory() {
   const fileType = document.getElementById("file-type").value;
 
   if (rows.length === 0) {
-    showError("Nenhum histórico para exportar.");
+    showToast("Nenhum histórico para exportar.", "error");
     return;
   }
 
@@ -216,14 +219,82 @@ function loadHistory() {
 }
 
 function clearHistory() {
-  if (confirm("Tem certeza que deseja limpar todo o histórico?")) {
-    historyData = [];
-    localStorage.removeItem("mediaCalculatorHistory");
-    document.querySelector("#history-table tbody").innerHTML = "";
-    updateHistoryView();
-  }
+  showConfirm(
+    "Tem certeza que deseja limpar todo o histórico? Essa ação não pode ser desfeita.",
+    () => {
+      historyData = [];
+      localStorage.removeItem("mediaCalculatorHistory");
+      document.querySelector("#history-table tbody").innerHTML = "";
+      updateHistoryView();
+      showToast("Histórico limpo com sucesso.", "success");
+    }
+  );
 }
 
 document
   .getElementById("clear-history-button")
   .addEventListener("click", clearHistory);
+
+/* --- Notification System --- */
+
+function showToast(message, type = "info") {
+  const container = document.getElementById("toast-container");
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+
+  let iconName = "information-circle-outline";
+  if (type === "success") iconName = "checkmark-circle-outline";
+  if (type === "error") iconName = "alert-circle-outline";
+  if (type === "warning") iconName = "warning-outline";
+
+  toast.innerHTML = `
+    <ion-icon name="${iconName}" style="font-size: 1.5rem"></ion-icon>
+    <span>${message}</span>
+  `;
+
+  container.appendChild(toast);
+
+  // Remove after 3 seconds
+  setTimeout(() => {
+    toast.style.animation = "fadeOut 0.3s ease forwards";
+    toast.addEventListener("animationend", () => {
+      toast.remove();
+    });
+  }, 4000);
+}
+
+function showConfirm(message, onConfirm) {
+  const modal = document.getElementById("confirm-modal");
+  const msgEl = document.getElementById("modal-message");
+  const confirmBtn = document.getElementById("modal-confirm");
+  const cancelBtn = document.getElementById("modal-cancel");
+
+  msgEl.textContent = message;
+  modal.classList.add("open");
+
+  const cleanup = () => {
+    modal.classList.remove("open");
+    confirmBtn.replaceWith(confirmBtn.cloneNode(true)); // remove listeners
+    cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+  };
+
+  // Clone buttons to ensure clean listeners
+  const newConfirmBtn = confirmBtn.cloneNode(true);
+  const newCancelBtn = cancelBtn.cloneNode(true);
+  confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+  cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+  newConfirmBtn.addEventListener("click", () => {
+    onConfirm();
+    modal.classList.remove("open");
+  });
+
+  newCancelBtn.addEventListener("click", () => {
+    modal.classList.remove("open");
+  });
+
+  // Close on outside click
+  modal.onclick = (e) => {
+    if (e.target === modal) modal.classList.remove("open");
+  };
+}
