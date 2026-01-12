@@ -1,4 +1,5 @@
 let lastEntry = null;
+let historyData = [];
 
 function calculateMedia() {
   const name = getInputValue("name");
@@ -23,9 +24,14 @@ function calculateMedia() {
   clearError();
 
   showResult(average);
-  addToHistorical(name, grades, average);
+  showResult(average);
 
-  lastEntry = { name, grades: [...grades], average };
+  const entry = { name, grades, average };
+  historyData.push(entry);
+  saveHistory();
+  addToHistorical(entry);
+
+  lastEntry = entry;
 }
 
 function getInputValue(id) {
@@ -88,24 +94,23 @@ function showResult(average) {
   }
 }
 
-function addToHistorical(name, grades, average) {
+function addToHistorical(entry) {
   const tableBody = document.querySelector("#history-table tbody");
   const row = document.createElement("tr");
 
-  const nameCell = createCell(name);
+  const nameCell = createCell(entry.name);
   row.appendChild(nameCell);
 
-  // Ensure we fill 4 columns even if fewer grades provided, though logic suggests we parse fixed 4 inputs
-  // The original logic iterated over the input values from getGrades which returns 4 items (NaN if empty)
-  // We should probably display the NaNs as dashes
-  const allFourGrades = getGrades(["grade1", "grade2", "grade3", "grade4"]);
-
-  allFourGrades.forEach((grade) => {
+  // We stored the 4 exact grades in the entry.grades array
+  // We need to ensure we display 4 cells.
+  // entry.grades was created from getGrades(["grade1", "grade2", "grade3", "grade4"])
+  // so it should have exactly 4 items, creating cells for them.
+  entry.grades.forEach((grade) => {
     const gradeCell = createCell(isValidGrade(grade) ? grade.toFixed(2) : "-");
     row.appendChild(gradeCell);
   });
 
-  const avgCell = createCell(average.toFixed(2));
+  const avgCell = createCell(entry.average.toFixed(2));
   row.appendChild(avgCell);
 
   tableBody.appendChild(row);
@@ -193,4 +198,32 @@ function updateHistoryView() {
 }
 
 // Init view
-updateHistoryView();
+loadHistory();
+
+function saveHistory() {
+  localStorage.setItem("mediaCalculatorHistory", JSON.stringify(historyData));
+}
+
+function loadHistory() {
+  const stored = localStorage.getItem("mediaCalculatorHistory");
+  if (stored) {
+    historyData = JSON.parse(stored);
+    // Clear table before re-rendering (though usually it's empty on load)
+    document.querySelector("#history-table tbody").innerHTML = "";
+    historyData.forEach((entry) => addToHistorical(entry));
+  }
+  updateHistoryView();
+}
+
+function clearHistory() {
+  if (confirm("Tem certeza que deseja limpar todo o histórico?")) {
+    historyData = [];
+    localStorage.removeItem("mediaCalculatorHistory");
+    document.querySelector("#history-table tbody").innerHTML = "";
+    updateHistoryView();
+  }
+}
+
+document
+  .getElementById("clear-history-button")
+  .addEventListener("click", clearHistory);
