@@ -34,14 +34,42 @@
 
       .converter-box {
         display: grid;
-        gap: 1.5rem;
+        grid-template-columns: 2fr auto 1fr; /* Origin(2) button Dest(1) */
+        gap: 1rem;
+        align-items: flex-start; /* Align Top to handle labels */
         border-radius: var(--radius-md);
       }
 
-      .currency-row {
+      /* Elements that should span full width in the grid */
+      .result-display,
+      .rate-info,
+      #convert-btn,
+      .error-msg {
+        grid-column: 1 / -1;
+      }
+
+      /* Stack vertically on smaller screens */
+      @media (max-width: 768px) {
+        .converter-box {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+      }
+
+      /* Origin Row: 2 inputs 50/50 */
+      .currency-row:first-of-type {
         display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 1rem;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 0.25rem; /* Small vertical gap between label and inputs */
+        column-gap: 1rem;
+        align-items: center;
+      }
+
+      /* Destination Row: 1 input full width */
+      .currency-row:last-of-type {
+        display: grid;
+        grid-template-columns: 1fr;
+        row-gap: 0.25rem; /* Same small vertical gap */
         align-items: center;
       }
 
@@ -100,6 +128,7 @@
         cursor: pointer;
         margin: 0 auto;
         transition: var(--transition-fast);
+        margin-top: 1.6rem; /* Align with inputs (skip label) */
       }
       .swap-btn:hover {
         background: var(--accent-color);
@@ -359,7 +388,7 @@
           </div>
 
           <div class="swap-btn" id="swap-button" title="Inverter Moedas">
-            <ion-icon name="swap-vertical-outline"></ion-icon>
+            <ion-icon name="swap-horizontal-outline"></ion-icon>
           </div>
 
           <div class="currency-row">
@@ -371,16 +400,6 @@
               "
               >Moeda de Destino</label
             >
-            <div
-              style="
-                padding: 1rem;
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: var(--radius-sm);
-                color: var(--text-secondary);
-              "
-            >
-              Convertido para
-            </div>
             <select id="to-currency">
               <!-- Options filled by JS -->
             </select>
