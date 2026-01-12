@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculadora de Média - Mathematics Hub</title>
+    <title>Calculadora de Média</title>
     <link rel="stylesheet" href="../../assets/css/style.css" />
     <script
       type="module"
@@ -13,17 +13,43 @@
       nomodule
       src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
     ></script>
+    <script type="module" src="../../assets/js/layout.js"></script>
     <style>
       /* App Specific overrides */
       .app-container {
-        max-width: 800px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
+      }
+      @media (max-width: 1024px) {
+        .app-container {
+          grid-template-columns: 1fr;
+          max-width: 100%;
+          gap: 0.75rem; /* Tighter gap */
+          padding: 0.5rem; /* Compact padding */
+        }
+        .card header {
+          margin-bottom: 1rem; /* Reduced internal margin */
+        }
+        .card header h1 {
+          font-size: 1.5rem;
+        }
+        .card header p {
+          font-size: 0.9rem;
+        }
+        .inputs-grid {
+          grid-template-columns: repeat(2, 1fr); /* 2x2 Grid for Mobile */
+          gap: 0.5rem;
+        }
       }
       .inputs-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
         margin: 1.5rem 0;
       }
       .result-box {
@@ -36,7 +62,7 @@
         font-weight: 700;
       }
       .history-section {
-        margin-top: 3rem;
+        margin-top: 0;
       }
       table {
         width: 100%;
@@ -67,26 +93,231 @@
         gap: 1rem;
         flex-wrap: wrap;
       }
+      .file-select {
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-sm);
+        color: white;
+        font-family: inherit;
+        font-size: 0.9rem;
+        outline: none;
+        cursor: pointer;
+        transition: var(--transition-fast);
+      }
+      .file-select:hover {
+        border-color: var(--accent-color);
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .file-select option {
+        background: var(--bg-color);
+        color: var(--text-primary);
+      }
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem;
+        text-align: center;
+        color: var(--text-secondary);
+        border: 2px dashed var(--card-border);
+        border-radius: var(--radius-md);
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .empty-state ion-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--card-border);
+      }
+      .empty-state h3 {
+        font-size: 1.2rem;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      /* TOAST NOTIFICATIONS */
+      #toast-container {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .toast {
+        min-width: 300px;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        color: white;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        animation: slideIn 0.3s ease forwards;
+        border-left: 4px solid var(--accent-color);
+      }
+      .toast.error {
+        border-left-color: var(--error);
+      }
+      .toast.success {
+        border-left-color: var(--success);
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+      }
+
+      /* CUSTOM MODAL */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 2000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .modal-overlay.open {
+        display: flex;
+        opacity: 1;
+      }
+      .modal-content {
+        background: #1e1b4b;
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+        box-shadow: var(--shadow-lg);
+      }
+      .modal-overlay.open .modal-content {
+        transform: scale(1);
+      }
+      .modal-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+      }
+      .btn-outline {
+        background: transparent;
+        border: 1px solid var(--card-border);
+        color: var(--text-secondary);
+      }
+      .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+      }
     </style>
   </head>
-  <body>
-    <main class="app-container">
-      <a
-        href="../../index.html"
-        style="
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          color: var(--text-secondary);
-          text-decoration: none;
-          margin-bottom: 2rem;
-        "
-      >
-        <ion-icon name="arrow-back-outline"></ion-icon> Voltar para o Hub
-      </a>
+  <body class="with-sidebar">
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="main-sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-area">
+          <ion-icon
+            name="shapes-outline"
+            style="font-size: 1.8rem; color: var(--accent-color)"
+          ></ion-icon>
+          <span
+            style="font-weight: 700; font-size: 1.2rem; letter-spacing: -0.5px"
+            >MathHub</span
+          >
+        </div>
+        <button id="sidebar-close" class="sidebar-toggle-btn mobile-only">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
 
-      <div class="card animate-fade-in">
-        <header style="text-align: center; margin-bottom: 2rem">
+      <nav class="sidebar-nav">
+        <ul>
+          <li>
+            <a href="../../index.html" class="nav-link" data-page="home">
+              <ion-icon name="grid-outline"></ion-icon>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-divider">Ferramentas</li>
+          <li>
+            <a
+              href="../../apps/basic-calculator/index.html"
+              class="nav-link"
+              data-page="basic-calculator"
+            >
+              <ion-icon name="calculator-outline"></ion-icon>
+              <span>Calculadora</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="../../apps/media-calculator/index.html"
+              class="nav-link active"
+              data-page="media-calculator"
+            >
+              <ion-icon name="school-outline"></ion-icon>
+              <span>Média Escolar</span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="../../apps/currency-converter/index.html"
+              class="nav-link"
+              data-page="currency-converter"
+            >
+              <ion-icon name="cash-outline"></ion-icon>
+              <span>Conversor Moedas</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>Desenvolvido por</p>
+        <a
+          href="https://github.com/vitoriapguimaraes"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <ion-icon name="logo-github"></ion-icon> vitoriapguimaraes
+        </a>
+      </div>
+    </aside>
+
+    <button id="sidebar-open" class="sidebar-toggle-btn floating-toggle">
+      <ion-icon name="menu-outline"></ion-icon>
+    </button>
+    <main class="app-container">
+      <!-- Sidebar handles navigation -->
+
+      <div class="card">
+        <header style="text-align: center">
           <div class="card-icon" style="margin: 0 auto 1rem auto">
             <ion-icon name="school-outline"></ion-icon>
           </div>
@@ -95,12 +326,7 @@
         </header>
 
         <div class="input-section">
-          <input
-            id="name"
-            type="text"
-            placeholder="Nome do Aluno"
-            style="margin-bottom: 1rem"
-          />
+          <input id="name" type="text" placeholder="Nome do Aluno" />
 
           <div class="inputs-grid">
             <input
@@ -166,53 +392,100 @@
         </div>
       </div>
 
-      <div class="history-section animate-fade-in delay-200">
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-          "
-        >
-          <h2>Histórico</h2>
-          <div style="display: flex; gap: 0.5rem">
-            <select
-              id="file-type"
-              style="padding: 0.5rem; border-radius: 4px; border: none"
-            >
-              <option value="txt">.txt</option>
-              <option value="csv">.csv</option>
-            </select>
-            <button
-              id="export-button"
-              class="btn"
-              style="padding: 0.5rem 1rem; font-size: 0.9rem"
-            >
-              Exportar
-            </button>
+      <div class="history-section">
+        <div id="history-content" style="display: none">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1rem;
+            "
+          >
+            <h2>Histórico</h2>
+            <div style="display: flex; gap: 0.5rem">
+              <select id="file-type" class="file-select">
+                <option value="txt">.txt</option>
+                <option value="csv">.csv</option>
+              </select>
+              <button
+                id="clear-history-button"
+                class="btn"
+                style="
+                  padding: 0.5rem 1rem;
+                  font-size: 0.9rem;
+                  background: transparent;
+                  border: 1px solid var(--warning);
+                  color: var(--warning);
+                "
+              >
+                Limpar
+              </button>
+              <button
+                id="export-button"
+                class="btn"
+                style="padding: 0.5rem 1rem; font-size: 0.9rem"
+              >
+                Exportar
+              </button>
+            </div>
+          </div>
+
+          <div style="overflow-x: auto; max-height: 400px">
+            <table id="history-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>N1</th>
+                  <th>N2</th>
+                  <th>N3</th>
+                  <th>N4</th>
+                  <th>Média</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Rows added by JS -->
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <div style="overflow-x: auto">
-          <table id="history-table">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>N1</th>
-                <th>N2</th>
-                <th>N3</th>
-                <th>N4</th>
-                <th>Média</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Rows added by JS -->
-            </tbody>
-          </table>
+        <div id="history-empty" class="empty-state">
+          <ion-icon name="clipboard-outline"></ion-icon>
+          <h3>Nenhum histórico disponível</h3>
+          <p>Os cálculos realizados aparecerão aqui.</p>
         </div>
       </div>
     </main>
+
+    <div id="toast-container"></div>
+
+    <div id="confirm-modal" class="modal-overlay">
+      <div class="modal-content">
+        <ion-icon
+          name="alert-circle-outline"
+          style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem"
+        ></ion-icon>
+        <h3 id="modal-title" style="margin-bottom: 0.5rem">Confirmação</h3>
+        <p id="modal-message">Tem certeza?</p>
+        <div class="modal-actions">
+          <button
+            id="modal-cancel"
+            class="btn btn-outline"
+            style="min-width: 100px"
+          >
+            Cancelar
+          </button>
+          <button
+            id="modal-confirm"
+            class="btn"
+            style="min-width: 100px; background: var(--error)"
+          >
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="script.js"></script>
   </body>
