@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Conversor de Moeda</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+
+  <body>
+    <div class="header">
+      <div class="title">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/7548/7548636.png"
+          style="filter: brightness(0) invert(1)"
+          width="100"
+          height="100"
+          alt="Ilustração de transformação de um cifrão para outro através de um ciclo de seta"
+        />
+        <h1>Conversor de moedas</h1>
+      </div>
+      <div class="subtitle">
+        <h2>Adicione as informações e converta o valor que desejar!</h2>
+      </div>
+    </div>
+
+    <main>
+      <div class="exchange-container">
+        <p>Indique o valor que precisa transferir e escolha as moedas.</p>
+
+        <div class="data-entry">
+          <select id="currency1" placeholder="Moeda de Origem"></select>
+
+          <input type="number" id="inicialAmount" placeholder="Valor" />
+
+          <button id="converter-button">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/271/271226.png"
+              style="filter: brightness(0) invert(1)"
+              width="20"
+              height="20"
+              alt="Seta apontando para direita"
+            />
+            Converter
+          </button>
+        </div>
+
+        <div class="data-out-container">
+          <div class="data-out-content">
+            <select id="currency2" placeholder="Moeda de Saída"></select>
+            <p id="result"></p>
+          </div>
+          <div class="error"></div>
+        </div>
+      </div>
+
+      <div class="historical">
+        <div class="historical-header">
+          <h2>Histórico de consultas</h2>
+
+          <div class="export-options">
+            <button id="export-button">Exportar como .txt</button>
+          </div>
+        </div>
+
+        <table id="history-table">
+          <thead>
+            <tr>
+              <th>$ Origem</th>
+              <th>Valor</th>
+              <th>$ Saída</th>
+              <th>Resultado</th>
+              <th>Data conversão</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </main>
+
+    <script src="./src/config.js"></script>
+    <script src="./src/script.js"></script>
+  </body>
+</html>
