@@ -4,9 +4,7 @@
 
 [link acesso ao deploy, quando tiver]
 
-<!-- exemplo: [![Acesse: Mathematics Hub](https://img.shields.io/badge/-Acesse:%20Mathematics%20Hub-000000?style=for-the-badge)](URL_DO_DEPLOY) -->
-
-<!-- ![Demonstração do sistema](link-para-gif-ou-imagem) -->
+![Demonstração do MathematicsHub](https://github.com/vitoriapguimaraes/mathematicsHub/blob/main/public/demo/navigation.gif)
 
 ## Funcionalidades Principais
 
@@ -66,7 +64,7 @@ Não é necessária nenhuma instalação de dependências ou servidor backend (P
 
 ## Status
 
-🚧 Em desenvolvimento
+✅ Concluído
 
 > Veja as [issues abertas](https://github.com/vitoriapguimaraes/mathematicsHub/issues) para sugestões de melhorias e próximos passos.
 
