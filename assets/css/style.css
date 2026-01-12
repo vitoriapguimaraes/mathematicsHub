@@ -124,13 +124,6 @@ p {
   color: var(--text-primary);
 }
 
-.card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(139, 92, 246, 0.3);
-  box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-}
-
 .card-icon {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
@@ -213,30 +206,6 @@ input:focus {
 }
 
 /* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
-}
-
-.delay-100 {
-  animation-delay: 0.1s;
-}
-.delay-200 {
-  animation-delay: 0.2s;
-}
-.delay-300 {
-  animation-delay: 0.3s;
-}
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -256,7 +225,6 @@ input:focus {
 /* Body Shift for Desktop Sidebar */
 body.with-sidebar {
   padding-left: 280px; /* Width of sidebar */
-  transition: padding-left var(--transition-smooth);
 }
 
 .sidebar {
@@ -272,7 +240,6 @@ body.with-sidebar {
   display: flex;
   flex-direction: column;
   z-index: 1000;
-  transition: transform var(--transition-smooth);
 }
 
 .sidebar-header {
