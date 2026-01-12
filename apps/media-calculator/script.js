@@ -109,6 +109,7 @@ function addToHistorical(name, grades, average) {
   row.appendChild(avgCell);
 
   tableBody.appendChild(row);
+  updateHistoryView();
 }
 
 function createCell(content) {
@@ -176,3 +177,20 @@ function exportHistory() {
 document
   .getElementById("export-button")
   .addEventListener("click", exportHistory);
+
+function updateHistoryView() {
+  const tableBody = document.querySelector("#history-table tbody");
+  const historyContent = document.getElementById("history-content");
+  const historyEmpty = document.getElementById("history-empty");
+
+  if (tableBody.children.length === 0) {
+    historyContent.style.display = "none";
+    historyEmpty.style.display = "flex";
+  } else {
+    historyContent.style.display = "block";
+    historyEmpty.style.display = "none";
+  }
+}
+
+// Init view
+updateHistoryView();

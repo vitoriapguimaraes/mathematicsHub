@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calculadora de Média - Mathematics Hub</title>
+    <title>Calculadora de Média</title>
     <link rel="stylesheet" href="../../assets/css/style.css" />
     <script
       type="module"
@@ -17,14 +17,24 @@
     <style>
       /* App Specific overrides */
       .app-container {
-        max-width: 800px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
+      }
+      @media (max-width: 1024px) {
+        .app-container {
+          grid-template-columns: 1fr;
+          max-width: 800px;
+        }
       }
       .inputs-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
         margin: 1.5rem 0;
       }
       .result-box {
@@ -37,7 +47,7 @@
         font-weight: 700;
       }
       .history-section {
-        margin-top: 3rem;
+        margin-top: 0;
       }
       table {
         width: 100%;
@@ -67,6 +77,48 @@
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
+      }
+      .file-select {
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-sm);
+        color: white;
+        font-family: inherit;
+        font-size: 0.9rem;
+        outline: none;
+        cursor: pointer;
+        transition: var(--transition-fast);
+      }
+      .file-select:hover {
+        border-color: var(--accent-color);
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .file-select option {
+        background: var(--bg-color);
+        color: var(--text-primary);
+      }
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem;
+        text-align: center;
+        color: var(--text-secondary);
+        border: 2px dashed var(--card-border);
+        border-radius: var(--radius-md);
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .empty-state ion-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--card-border);
+      }
+      .empty-state h3 {
+        font-size: 1.2rem;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
       }
     </style>
   </head>
@@ -150,7 +202,7 @@
       <!-- Sidebar handles navigation -->
 
       <div class="card">
-        <header style="text-align: center; margin-bottom: 2rem">
+        <header style="text-align: center">
           <div class="card-icon" style="margin: 0 auto 1rem auto">
             <ion-icon name="school-outline"></ion-icon>
           </div>
@@ -159,12 +211,7 @@
         </header>
 
         <div class="input-section">
-          <input
-            id="name"
-            type="text"
-            placeholder="Nome do Aluno"
-            style="margin-bottom: 1rem"
-          />
+          <input id="name" type="text" placeholder="Nome do Aluno" />
 
           <div class="inputs-grid">
             <input
@@ -231,49 +278,54 @@
       </div>
 
       <div class="history-section">
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-          "
-        >
-          <h2>Histórico</h2>
-          <div style="display: flex; gap: 0.5rem">
-            <select
-              id="file-type"
-              style="padding: 0.5rem; border-radius: 4px; border: none"
-            >
-              <option value="txt">.txt</option>
-              <option value="csv">.csv</option>
-            </select>
-            <button
-              id="export-button"
-              class="btn"
-              style="padding: 0.5rem 1rem; font-size: 0.9rem"
-            >
-              Exportar
-            </button>
+        <div id="history-content" style="display: none">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1rem;
+            "
+          >
+            <h2>Histórico</h2>
+            <div style="display: flex; gap: 0.5rem">
+              <select id="file-type" class="file-select">
+                <option value="txt">.txt</option>
+                <option value="csv">.csv</option>
+              </select>
+              <button
+                id="export-button"
+                class="btn"
+                style="padding: 0.5rem 1rem; font-size: 0.9rem"
+              >
+                Exportar
+              </button>
+            </div>
+          </div>
+
+          <div style="overflow-x: auto">
+            <table id="history-table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>N1</th>
+                  <th>N2</th>
+                  <th>N3</th>
+                  <th>N4</th>
+                  <th>Média</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Rows added by JS -->
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <div style="overflow-x: auto">
-          <table id="history-table">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>N1</th>
-                <th>N2</th>
-                <th>N3</th>
-                <th>N4</th>
-                <th>Média</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Rows added by JS -->
-            </tbody>
-          </table>
+        <div id="history-empty" class="empty-state">
+          <ion-icon name="clipboard-outline"></ion-icon>
+          <h3>Nenhum histórico disponível</h3>
+          <p>Os cálculos realizados aparecerão aqui.</p>
         </div>
       </div>
     </main>
