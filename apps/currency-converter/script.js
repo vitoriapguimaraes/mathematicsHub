@@ -137,27 +137,42 @@ function swapCurrencies() {
 
 function exportHistory() {
   const rows = historyTableBody.querySelectorAll("tr");
+  const fileType = document.getElementById("file-type").value;
+
   if (rows.length === 0) {
-    showError("Histórico vazio.");
+    showToast("Histórico vazio.", "error");
     return;
   }
 
-  let content = "Data\tDe\tPara\tResultado\n";
+  const isCSV = fileType === "csv";
+  const separator = isCSV ? "," : "\t";
+  const lineBreak = "\n";
+
+  let content = `Data${separator}De${separator}Para${separator}Resultado${lineBreak}`;
+
   rows.forEach((row) => {
     const cells = row.querySelectorAll("td");
     const line = Array.from(cells)
-      .map((c) => c.textContent)
-      .join("\t");
-    content += line + "\n";
+      .map((c) => {
+        const text = c.textContent;
+        return isCSV && text.includes(",") ? `"${text}"` : text;
+      })
+      .join(separator);
+    content += line + lineBreak;
   });
 
-  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  const mimeType = isCSV ? "text/csv" : "text/plain";
+  const extension = isCSV ? "csv" : "txt";
+  const blob = new Blob([content], { type: `${mimeType};charset=utf-8` });
   const url = URL.createObjectURL(blob);
+
   const a = document.createElement("a");
   a.href = url;
-  a.download = "historico_conversoes.txt";
+  a.download = `historico_conversoes.${extension}`;
   a.click();
   URL.revokeObjectURL(url);
+
+  showToast(`Histórico exportado como .${extension}`, "success");
 }
 
 const clearHistoryBtn = document.getElementById("clear-history-button");

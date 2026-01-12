@@ -62,7 +62,29 @@
       input:focus,
       select:focus {
         border-color: var(--accent-color);
+        border-color: var(--accent-color);
         background: rgba(0, 0, 0, 0.5);
+      }
+
+      .file-select {
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-sm);
+        color: white;
+        font-family: inherit;
+        font-size: 0.9rem;
+        outline: none;
+        cursor: pointer;
+        transition: var(--transition-fast);
+      }
+      .file-select:hover {
+        border-color: var(--accent-color);
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .file-select option {
+        background: var(--bg-color);
+        color: var(--text-primary);
       }
 
       .swap-btn {
@@ -131,7 +153,105 @@
         color: var(--accent-color);
       }
 
-      /* Toast & Modal styles can be added if we implement notifications here too */
+      /* TOAST NOTIFICATIONS */
+      #toast-container {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .toast {
+        min-width: 300px;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        color: white;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        animation: slideIn 0.3s ease forwards;
+        border-left: 4px solid var(--accent-color);
+      }
+      .toast.error {
+        border-left-color: var(--error);
+      }
+      .toast.success {
+        border-left-color: var(--success);
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+      }
+
+      /* CUSTOM MODAL */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 2000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .modal-overlay.open {
+        display: flex;
+        opacity: 1;
+      }
+      .modal-content {
+        background: #1e1b4b;
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+        box-shadow: var(--shadow-lg);
+      }
+      .modal-overlay.open .modal-content {
+        transform: scale(1);
+      }
+      .modal-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+      }
+      .btn-outline {
+        background: transparent;
+        border: 1px solid var(--card-border);
+        color: var(--text-secondary);
+      }
+      .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+      }
     </style>
   </head>
   <body class="with-sidebar">
@@ -164,6 +284,16 @@
           <li class="nav-divider">Ferramentas</li>
           <li>
             <a
+              href="../../apps/basic-calculator/index.html"
+              class="nav-link"
+              data-page="basic-calculator"
+            >
+              <ion-icon name="calculator-outline"></ion-icon>
+              <span>Calculadora</span>
+            </a>
+          </li>
+          <li>
+            <a
               href="../../apps/media-calculator/index.html"
               class="nav-link"
               data-page="media-calculator"
@@ -180,16 +310,6 @@
             >
               <ion-icon name="cash-outline"></ion-icon>
               <span>Conversor Moedas</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="../../apps/basic-calculator/index.html"
-              class="nav-link"
-              data-page="basic-calculator"
-            >
-              <ion-icon name="calculator-outline"></ion-icon>
-              <span>Calculadora</span>
             </a>
           </li>
         </ul>
@@ -293,6 +413,10 @@
           >
             <h2>Histórico Recente</h2>
             <div style="display: flex; gap: 0.5rem">
+              <select id="file-type" class="file-select">
+                <option value="txt">.txt</option>
+                <option value="csv">.csv</option>
+              </select>
               <button
                 id="clear-history-button"
                 class="btn"
